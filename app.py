@@ -1,18 +1,24 @@
 from engagement_analyzer import calculate_engagement
+from analytics_engine import EngagementAnalytics
 
-print("Virtual Engagement Analyzer - Prototype")
+print("Virtual Engagement Analyzer – Intelligence Prototype\n")
 
-attendance = float(input("Enter attendance percentage: "))
-chat_messages = int(input("Enter number of chat messages: "))
-reactions = int(input("Enter number of reactions: "))
+analytics = EngagementAnalytics()
 
-score = calculate_engagement(attendance, chat_messages, reactions)
+while True:
+    attendance = float(input("Attendance percentage: "))
+    chat_messages = int(input("Chat messages count: "))
+    reactions = int(input("Reactions count: "))
 
-print("\nEngagement Score:", score)
+    score = calculate_engagement(attendance, chat_messages, reactions)
+    analytics.add_session_score(score)
 
-if score > 70:
-    print("Engagement Level: High")
-elif score > 40:
-    print("Engagement Level: Moderate")
-else:
-    print("Engagement Level: Low")
+    print("\nSession Engagement Score:", score)
+
+    print("Average Engagement:", analytics.average_engagement())
+    print("Engagement Trend:", analytics.engagement_trend())
+
+    cont = input("\nAdd another session? (y/n): ")
+    if cont.lower() != "y":
+        break
+
