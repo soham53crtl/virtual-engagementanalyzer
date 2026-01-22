@@ -1,6 +1,1 @@
 streamlit
-pandas
-numpy
-plotly
-scikit-learn
-# Add any other packages your app needs, e.g. opencv-python, torch, sqlalchemy, etc.
