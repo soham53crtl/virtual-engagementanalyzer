@@ -1,40 +1,32 @@
 """
-Analytics Engine
-----------------
-Responsible for aggregating engagement data and generating
-insights for meetings or virtual sessions.
+Engagement Calculator
+----------------------
+Calculates engagement scores based on attendance, chat activity, and reactions.
 """
 
-from statistics import mean
 
-
-class EngagementAnalytics:
-    def __init__(self):
-        self.session_scores = []
-
-    def add_session_score(self, score):
-        self.session_scores.append(score)
-
-    def average_engagement(self):
-        if not self.session_scores:
-            return 0
-        return round(mean(self.session_scores), 2)
-
-    def engagement_trend(self):
-        if len(self.session_scores) < 2:
-            return "Insufficient data"
-        if self.session_scores[-1] > self.session_scores[0]:
-            return "Improving"
-        elif self.session_scores[-1] < self.session_scores[0]:
-            return "Declining"
-        return "Stable"
+def calculate_engagement(attendance: float, chat_messages: int, reactions: int) -> float:
+    """
+    Calculates engagement score based on:
+    - Attendance percentage (0-100)
+    - Chat messages count
+    - Reactions count
+    
+    Returns a score between 0-100.
+    """
+    # Normalize inputs
+    attendance_weight = min(attendance, 100) * 0.4
+    
+    # Normalize chat messages (assume 50+ messages is maximum engagement)
+    chat_weight = min(chat_messages / 50, 1) * 40
+    
+    # Normalize reactions (assume 30+ reactions is maximum engagement)
+    reactions_weight = min(reactions / 30, 1) * 20
+    
+    engagement_score = attendance_weight + chat_weight + reactions_weight
+    return round(min(engagement_score, 100), 2)
 
 
 if __name__ == "__main__":
-    analytics = EngagementAnalytics()
-    analytics.add_session_score(45)
-    analytics.add_session_score(62)
-    analytics.add_session_score(78)
-
-    print("Average Engagement:", analytics.average_engagement())
-    print("Engagement Trend:", analytics.engagement_trend())
+    score = calculate_engagement(85, 20, 15)
+    print("Engagement Score:", score)

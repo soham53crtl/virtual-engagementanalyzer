@@ -1,33 +1,49 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
+from engagement_analyzer import calculate_engagement
+from analytics_engine import EngagementAnalytics
+from sentiment_analyzer import analyze_sentiment
 
-st.set_page_config(page_title="Virtual Engagement Analyzer", layout="wide")
-
-st.title("Virtual Engagement Analyzer")
-st.markdown(
-    """
-This is a minimal Streamlit entrypoint prepared for deployment.
-Replace the contents with your actual app code or import your app modules here.
-"""
+st.set_page_config(
+    page_title="Virtual Engagement Analyzer",
+    layout="centered"
 )
 
-st.sidebar.header("Sample options")
-n = st.sidebar.slider("Sample rows", 5, 200, 25)
+st.title("📊 Virtual Engagement Analyzer")
+st.subheader("Engagement Intelligence Prototype")
 
-st.write("Sample random data")
-df = pd.DataFrame({
-    "time": pd.date_range("2026-01-01", periods=n, freq="T"),
-    "engagement": np.random.rand(n),
-    "participants": np.random.randint(1, 30, size=n),
-})
-st.dataframe(df)
+analytics = EngagementAnalytics()
 
-if st.button("Run quick analysis"):
-    avg_engagement = df["engagement"].mean()
-    st.metric("Average engagement", f"{avg_engagement:.3f}")
-    st.line_chart(df.set_index("time")["engagement"]) 
-    st.success("Quick analysis finished (example).")
+st.markdown("### Enter Session Details")
+
+attendance = st.slider("Attendance Percentage", 0, 100, 75)
+chat_messages = st.number_input("Number of Chat Messages", min_value=0, step=1)
+reactions = st.number_input("Number of Reactions", min_value=0, step=1)
+
+chat_text = st.text_area("Paste chat text (optional)")
+
+if st.button("Analyze Engagement"):
+    score = calculate_engagement(attendance, chat_messages, reactions)
+    analytics.add_session_score(score)
+
+    st.markdown("### Results")
+    st.metric("Engagement Score", score)
+
+    if score > 70:
+        st.success("High Engagement")
+    elif score > 40:
+        st.warning("Moderate Engagement")
+    else:
+        st.error("Low Engagement")
+
+    st.markdown("### Session Analytics")
+    st.write("Average Engagement:", analytics.average_engagement())
+    st.write("Engagement Trend:", analytics.engagement_trend())
+
+    if chat_text.strip():
+        polarity, label = analyze_sentiment(chat_text)
+        st.markdown("### Sentiment Analysis")
+        st.write("Sentiment:", label)
+        st.write("Polarity Score:", round(polarity, 2))
 
 st.markdown(
     """
