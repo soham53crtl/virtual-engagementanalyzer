@@ -1,31 +1,18 @@
 import streamlit as st
-from engagement_analyzer import calculate_engagement
-from analytics_engine import EngagementAnalytics
-from sentiment_analyzer import analyze_sentiment
 
-st.set_page_config(
-    page_title="Virtual Engagement Analyzer",
-    layout="centered"
-)
+st.set_page_config(page_title="Virtual Engagement Analyzer", layout="wide")
 
-st.title("📊 Virtual Engagement Analyzer")
-st.subheader("Engagement Intelligence Prototype")
+st.title("Virtual Engagement Analyzer")
+st.write("This is a minimal deploy template. Replace with your real app later.")
 
-analytics = EngagementAnalytics()
+attendance = st.slider("Attendance %", 0, 100, 75)
+chat_messages = st.number_input("Chat messages", min_value=0, value=10)
+reactions = st.number_input("Reactions", min_value=0, value=5)
 
-st.markdown("### Enter Session Details")
-
-attendance = st.slider("Attendance Percentage", 0, 100, 75)
-chat_messages = st.number_input("Number of Chat Messages", min_value=0, step=1)
-reactions = st.number_input("Number of Reactions", min_value=0, step=1)
-chat_text = st.text_area("Paste chat text (optional)")
-
-if st.button("Analyze Engagement"):
-    score = calculate_engagement(attendance, chat_messages, reactions)
-    analytics.add_session_score(score)
-
-    st.markdown("### Results")
-    st.metric("Engagement Score", score)
+if st.button("Calculate Engagement"):
+    score = (attendance * 0.5) + (chat_messages * 0.3) + (reactions * 0.2)
+    score = min(score, 100)
+    st.metric("Engagement Score", round(score, 2))
 
     if score > 70:
         st.success("High Engagement")
@@ -33,10 +20,6 @@ if st.button("Analyze Engagement"):
         st.warning("Moderate Engagement")
     else:
         st.error("Low Engagement")
-
-    st.markdown("### Session Analytics")
-    st.write("Average Engagement:", analytics.average_engagement())
-    st.write("Engagement Trend:", analytics.engagement_trend())
 
     if chat_text.strip():
         polarity, label = analyze_sentiment(chat_text)
