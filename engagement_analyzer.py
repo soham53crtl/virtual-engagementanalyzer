@@ -1,20 +1,40 @@
-def calculate_engagement(attendance, chat_messages, reactions):
-    """
-    Calculate a basic engagement score based on interaction metrics.
-    """
+"""
+Analytics Engine
+----------------
+Responsible for aggregating engagement data and generating
+insights for meetings or virtual sessions.
+"""
 
-    score = 0
-    score += attendance * 0.5
-    score += chat_messages * 2
-    score += reactions * 3
+from statistics import mean
 
-    return round(score, 2)
+
+class EngagementAnalytics:
+    def __init__(self):
+        self.session_scores = []
+
+    def add_session_score(self, score):
+        self.session_scores.append(score)
+
+    def average_engagement(self):
+        if not self.session_scores:
+            return 0
+        return round(mean(self.session_scores), 2)
+
+    def engagement_trend(self):
+        if len(self.session_scores) < 2:
+            return "Insufficient data"
+        if self.session_scores[-1] > self.session_scores[0]:
+            return "Improving"
+        elif self.session_scores[-1] < self.session_scores[0]:
+            return "Declining"
+        return "Stable"
 
 
 if __name__ == "__main__":
-    attendance = 80
-    chat_messages = 5
-    reactions = 3
+    analytics = EngagementAnalytics()
+    analytics.add_session_score(45)
+    analytics.add_session_score(62)
+    analytics.add_session_score(78)
 
-    print("Engagement Score:",
-          calculate_engagement(attendance, chat_messages, reactions))
+    print("Average Engagement:", analytics.average_engagement())
+    print("Engagement Trend:", analytics.engagement_trend())
