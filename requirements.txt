@@ -1,4 +1,7 @@
 streamlit
 textblob
-python>=3.8
+pandas
+numpy
+scikit-learn
+
 
