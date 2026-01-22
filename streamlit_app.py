@@ -1,28 +1,37 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
 
 st.set_page_config(page_title="Virtual Engagement Analyzer", layout="wide")
 
 st.title("Virtual Engagement Analyzer")
-st.write("This is a minimal deploy template. Replace with your real app later.")
+st.markdown(
+    """
+This is a minimal Streamlit entrypoint prepared for deployment.
+Replace the contents with your actual app code or import your app modules here.
+"""
+)
 
-attendance = st.slider("Attendance %", 0, 100, 75)
-chat_messages = st.number_input("Chat messages", min_value=0, value=10)
-reactions = st.number_input("Reactions", min_value=0, value=5)
+st.sidebar.header("Sample options")
+n = st.sidebar.slider("Sample rows", 5, 200, 25)
 
-if st.button("Calculate Engagement"):
-    score = (attendance * 0.5) + (chat_messages * 0.3) + (reactions * 0.2)
-    score = min(score, 100)
-    st.metric("Engagement Score", round(score, 2))
+st.write("Sample random data")
+df = pd.DataFrame({
+    "time": pd.date_range("2026-01-01", periods=n, freq="T"),
+    "engagement": np.random.rand(n),
+    "participants": np.random.randint(1, 30, size=n),
+})
+st.dataframe(df)
 
-    if score > 70:
-        st.success("High Engagement")
-    elif score > 40:
-        st.warning("Moderate Engagement")
-    else:
-        st.error("Low Engagement")
+if st.button("Run quick analysis"):
+    avg_engagement = df["engagement"].mean()
+    st.metric("Average engagement", f"{avg_engagement:.3f}")
+    st.line_chart(df.set_index("time")["engagement"]) 
+    st.success("Quick analysis finished (example).")
 
-    if chat_text.strip():
-        polarity, label = analyze_sentiment(chat_text)
-        st.markdown("### Sentiment Analysis")
-        st.write("Sentiment:", label)
-        st.write("Polarity Score:", round(polarity, 2))
+st.markdown(
+    """
+Secrets: If your app needs secrets, add them in Streamlit Cloud under **Manage app → Settings → Secrets** and use `st.secrets["KEY"]`.
+Run locally: `streamlit run streamlit_app.py`
+"""
+)
