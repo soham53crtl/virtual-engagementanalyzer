@@ -11,7 +11,11 @@ st.set_page_config(
 st.title("📊 Virtual Engagement Analyzer")
 st.subheader("Engagement Intelligence Prototype")
 
-analytics = EngagementAnalytics()
+# Initialize session state for analytics
+if "analytics" not in st.session_state:
+    st.session_state.analytics = EngagementAnalytics()
+
+analytics = st.session_state.analytics
 
 st.markdown("### Enter Session Details")
 
